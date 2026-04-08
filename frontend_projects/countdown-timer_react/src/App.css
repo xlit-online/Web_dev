@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: #111;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.container {
+  text-align: center;
+}
+
+.input-box input {
+  width: 120px;
+  padding: 10px;
+  margin: 5px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  text-align: center;
+}
+
+.display {
+  font-size: 70px;
+  font-weight: bold;
+  padding: 20px 40px;
+  background: #222;
+  border-radius: 10px;
+  margin: 20px 0;
+  letter-spacing: 4px;
+}
+
+.buttons button {
+  padding: 12px 20px;
+  font-size: 18px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.start {
+  background: green;
+  color: white;
+}
+
+.pause {
+  background: orange;
+  color: white;
+}
+
+.reset {
+  background: red;
+  color: white;
+}
