@@ -1,4 +1,4 @@
-const API_URL = "import.meta.env.VITE_API_URL";
+const API_URL = "https://web-dev-csr-api-internal-api.onrender.com";
 
 const todoForm = document.getElementById("todoForm");
 const todoInput = document.getElementById("todoInput");
