@@ -22,7 +22,7 @@ async function addTodo(req, res) {
   const newTodo = {
     id: Date.now(),
     name: body.name,
-    completed: false
+    completed: false,
   };
 
   db.todos.push(newTodo);
@@ -37,12 +37,12 @@ async function updateTodo(req, res) {
   const db = readData();
   const body = await getRequestBody(req);
 
-  const urlObj = new URL(req.url, "http://localhost:3000");
+  const urlObj = new URL(req.url, `http://${req.headers.host}`);
   const id = Number(urlObj.searchParams.get("id"));
 
-  if (!id) {
+  if (!id || isNaN(id)) {
     res.writeHead(400, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Todo id is required" }));
+    return res.end(JSON.stringify({ message: "Valid todo id is required" }));
   }
 
   const todoIndex = db.todos.findIndex((todo) => todo.id === id);
@@ -55,7 +55,7 @@ async function updateTodo(req, res) {
   db.todos[todoIndex] = {
     ...db.todos[todoIndex],
     name: body.name ?? db.todos[todoIndex].name,
-    completed: body.completed ?? db.todos[todoIndex].completed
+    completed: body.completed ?? db.todos[todoIndex].completed,
   };
 
   writeData(db);
@@ -68,12 +68,13 @@ async function updateTodo(req, res) {
 function deleteTodo(req, res) {
   const db = readData();
 
-  const urlObj = new URL(req.url, "http://localhost:3000");
+  const urlObj = new URL(req.url, `http://${req.headers.host}`);
+
   const id = Number(urlObj.searchParams.get("id"));
 
-  if (!id) {
+  if (!id || isNaN(id)) {
     res.writeHead(400, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Todo id is required" }));
+    return res.end(JSON.stringify({ message: "Valid todo id is required" }));
   }
 
   const updatedTodos = db.todos.filter((todo) => todo.id !== id);
@@ -94,5 +95,5 @@ module.exports = {
   getTodos,
   addTodo,
   updateTodo,
-  deleteTodo
+  deleteTodo,
 };
