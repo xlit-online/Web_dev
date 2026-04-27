@@ -17,7 +17,7 @@ async function getTodos(req, res) {
 // POST /api/todos
 async function addTodo(req, res) {
   try {
-    const body = await getRequestBody(req);
+    const body = (await getRequestBody(req)) || {};
 
     if (!body.title) {
       res.writeHead(400, { "Content-Type": "application/json" });
@@ -40,24 +40,23 @@ async function addTodo(req, res) {
 // PUT /api/todos?id=123
 async function updateTodo(req, res) {
   try {
-    const body = await getRequestBody(req);
+    const body = (await getRequestBody(req)) || {};
 
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
     const id = urlObj.searchParams.get("id");
 
-    if (!id) {
+    if (!id || id.length !== 24) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ message: "Todo id is required" }));
+      return res.end(JSON.stringify({ message: "Invalid todo id" }));
     }
 
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      id,
-      {
-        title: body.title,
-        completed: body.completed,
-      },
-      { new: true }
-    );
+    const updateData = {};
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.completed !== undefined) updateData.completed = body.completed;
+
+    const updatedTodo = await Todo.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     if (!updatedTodo) {
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -78,9 +77,9 @@ async function deleteTodo(req, res) {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
     const id = urlObj.searchParams.get("id");
 
-    if (!id) {
+    if (!id || id.length !== 24) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ message: "Todo id is required" }));
+      return res.end(JSON.stringify({ message: "Invalid todo id" }));
     }
 
     const deletedTodo = await Todo.findByIdAndDelete(id);
