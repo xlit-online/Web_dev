@@ -16,10 +16,11 @@ async function loadTodos() {
     li.textContent = todo.title;
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
+    deleteBtn.textContent = "Delete";   
     deleteBtn.style.marginLeft = "10px";
 
     deleteBtn.addEventListener("click", async () => {
+      console.log("Deleting:", todo._id);
       await fetch(`${API_URL}?id=${todo._id}`, {
         method: "DELETE",
       });

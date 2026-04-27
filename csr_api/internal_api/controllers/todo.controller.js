@@ -73,6 +73,7 @@ async function updateTodo(req, res) {
 
 // DELETE /api/todos?id=123
 async function deleteTodo(req, res) {
+  console.log("DELETE ID:", id);
   try {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
     const id = urlObj.searchParams.get("id");
@@ -95,6 +96,7 @@ async function deleteTodo(req, res) {
     res.writeHead(500, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Server error", error: error.message }));
   }
+  
 }
 
 module.exports = {
