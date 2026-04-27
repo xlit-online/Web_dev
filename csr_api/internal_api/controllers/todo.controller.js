@@ -1,94 +1,101 @@
-const { readData, writeData } = require("../helpers/fileStorage");
+const Todo = require("../models/Todo");
 const getRequestBody = require("../helpers/bodyParser");
 
 // GET /api/todos
-function getTodos(req, res) {
-  const db = readData();
+async function getTodos(req, res) {
+  try {
+    const todos = await Todo.find();
 
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(db.todos));
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(todos));
+  } catch (error) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Server error", error: error.message }));
+  }
 }
 
 // POST /api/todos
 async function addTodo(req, res) {
-  const db = readData();
-  const body = await getRequestBody(req);
+  try {
+    const body = await getRequestBody(req);
 
-  if (!body.name) {
-    res.writeHead(400, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Todo name is required" }));
+    if (!body.title) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "Todo title is required" }));
+    }
+
+    const newTodo = await Todo.create({
+      title: body.title,
+      completed: false,
+    });
+
+    res.writeHead(201, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(newTodo));
+  } catch (error) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Server error", error: error.message }));
   }
-
-  const newTodo = {
-    id: Date.now(),
-    name: body.name,
-    completed: false,
-  };
-
-  db.todos.push(newTodo);
-  writeData(db);
-
-  res.writeHead(201, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(newTodo));
 }
 
 // PUT /api/todos?id=123
 async function updateTodo(req, res) {
-  const db = readData();
-  const body = await getRequestBody(req);
+  try {
+    const body = await getRequestBody(req);
 
-  const urlObj = new URL(req.url, `http://${req.headers.host}`);
-  const id = Number(urlObj.searchParams.get("id"));
+    const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    const id = urlObj.searchParams.get("id");
 
-  if (!id || isNaN(id)) {
-    res.writeHead(400, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Valid todo id is required" }));
+    if (!id) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "Todo id is required" }));
+    }
+
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      {
+        title: body.title,
+        completed: body.completed,
+      },
+      { new: true }
+    );
+
+    if (!updatedTodo) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "Todo not found" }));
+    }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(updatedTodo));
+  } catch (error) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Server error", error: error.message }));
   }
-
-  const todoIndex = db.todos.findIndex((todo) => todo.id === id);
-
-  if (todoIndex === -1) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Todo not found" }));
-  }
-
-  db.todos[todoIndex] = {
-    ...db.todos[todoIndex],
-    name: body.name ?? db.todos[todoIndex].name,
-    completed: body.completed ?? db.todos[todoIndex].completed,
-  };
-
-  writeData(db);
-
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(db.todos[todoIndex]));
 }
 
 // DELETE /api/todos?id=123
-function deleteTodo(req, res) {
-  const db = readData();
+async function deleteTodo(req, res) {
+  try {
+    const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    const id = urlObj.searchParams.get("id");
 
-  const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    if (!id) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "Todo id is required" }));
+    }
 
-  const id = Number(urlObj.searchParams.get("id"));
+    const deletedTodo = await Todo.findByIdAndDelete(id);
 
-  if (!id || isNaN(id)) {
-    res.writeHead(400, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Valid todo id is required" }));
+    if (!deletedTodo) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "Todo not found" }));
+    }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Todo deleted successfully" }));
+  } catch (error) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Server error", error: error.message }));
   }
-
-  const updatedTodos = db.todos.filter((todo) => todo.id !== id);
-
-  if (updatedTodos.length === db.todos.length) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Todo not found" }));
-  }
-
-  db.todos = updatedTodos;
-  writeData(db);
-
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ message: "Todo deleted" }));
 }
 
 module.exports = {

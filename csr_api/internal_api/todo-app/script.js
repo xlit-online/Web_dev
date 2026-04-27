@@ -1,4 +1,4 @@
-const API_URL = "https://web-dev-csr-api-internal-api.onrender.com";
+const API_URL = "https://web-dev-csr-api-internal-api.onrender.com/api/todos";
 
 const todoForm = document.getElementById("todoForm");
 const todoInput = document.getElementById("todoInput");
@@ -12,14 +12,14 @@ async function loadTodos() {
 
   todos.forEach((todo) => {
     const li = document.createElement("li");
-    li.textContent = todo.name;
+    li.textContent = todo.title;
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.style.marginLeft = "10px";
 
     deleteBtn.addEventListener("click", async () => {
-      await fetch(`${API_URL}?id=${todo.id}`, {
+      await fetch(`${API_URL}?id=${todo._id}`, {
         method: "DELETE"
       });
 
@@ -34,12 +34,12 @@ async function loadTodos() {
 todoForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const todoName = todoInput.value;
+  const todoTitle = todoInput.value;
 
   await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: todoName })
+    body: JSON.stringify({ title: todoTitle })
   });
 
   todoInput.value = "";
