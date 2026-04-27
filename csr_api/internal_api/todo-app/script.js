@@ -1,4 +1,4 @@
-const API_URL = "https://web-dev-csr-api-internal-api.onrender.com/api/todos";
+const API_URL = "https://web-dev-csr-api-internal-api.onrender.com";
 
 const todoForm = document.getElementById("todoForm");
 const todoInput = document.getElementById("todoInput");
