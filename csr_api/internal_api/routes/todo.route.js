@@ -1,26 +1,25 @@
 const todoController = require("../controllers/todo.controller");
 
 function todoRoutes(req, res) {
-  // GET /api/todos
-  if (req.url.startsWith("/api/todos") && req.method === "GET") {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const pathname = url.pathname;
+
+  if (pathname === "/api/todos" && req.method === "GET") {
     todoController.getTodos(req, res);
     return true;
   }
 
-  // POST /api/todos
-  if (req.url.startsWith("/api/todos") && req.method === "POST") {
+  if (pathname === "/api/todos" && req.method === "POST") {
     todoController.addTodo(req, res);
     return true;
   }
 
-  // PUT /api/todos?id=xxxx
-  if (req.url.startsWith("/api/todos") && req.method === "PUT") {
+  if (pathname === "/api/todos" && req.method === "PUT") {
     todoController.updateTodo(req, res);
     return true;
   }
 
-  // DELETE /api/todos?id=xxxx
-  if (req.url.startsWith("/api/todos") && req.method === "DELETE") {
+  if (pathname === "/api/todos" && req.method === "DELETE") {
     todoController.deleteTodo(req, res);
     return true;
   }
