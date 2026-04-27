@@ -73,14 +73,15 @@ async function updateTodo(req, res) {
 
 // DELETE /api/todos?id=123
 async function deleteTodo(req, res) {
-  console.log("DELETE ID:", id);
   try {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
-    const id = urlObj.searchParams.get("id");
+    const id = urlObj.searchParams.get("id"); // ✅ DEFINE FIRST
 
-    if (!id || id.length !== 24) {
+    console.log("DELETE ID:", id); // ✅ now safe
+
+    if (!id) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ message: "Invalid todo id" }));
+      return res.end(JSON.stringify({ message: "Todo id is required" }));
     }
 
     const deletedTodo = await Todo.findByIdAndDelete(id);
@@ -91,12 +92,14 @@ async function deleteTodo(req, res) {
     }
 
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Todo deleted successfully" }));
-  } catch (error) {
+    res.end(JSON.stringify({ message: "Deleted successfully" }));
+
+  } catch (err) {
+    console.log(err);
+
     res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Server error", error: error.message }));
+    res.end(JSON.stringify({ message: "Server error", error: err.message }));
   }
-  
 }
 
 module.exports = {

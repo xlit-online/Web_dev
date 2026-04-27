@@ -20,7 +20,6 @@ async function loadTodos() {
     deleteBtn.style.marginLeft = "10px";
 
     deleteBtn.addEventListener("click", async () => {
-      console.log("Deleting:", todo._id);
       await fetch(`${API_URL}?id=${todo._id}`, {
         method: "DELETE",
       });
