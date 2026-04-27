@@ -1,4 +1,4 @@
-function getRequestBody(req) {
+module.exports = function getRequestBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
 
@@ -8,10 +8,9 @@ function getRequestBody(req) {
 
     req.on("end", () => {
       try {
-        const parsed = body ? JSON.parse(body) : {};
-        resolve(parsed);
-      } catch (error) {
-        reject(error);
+        resolve(body ? JSON.parse(body) : {});
+      } catch (err) {
+        reject(err);
       }
     });
 
@@ -19,6 +18,4 @@ function getRequestBody(req) {
       reject(err);
     });
   });
-}
-
-module.exports = getRequestBody;
+};
