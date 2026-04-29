@@ -22,11 +22,11 @@ function router(req, res) {
   req.parsedUrl = urlObj;
   req.pathname = urlObj.pathname;
 
-  const handled = todoRoutes(req, res);
-  if (handled) return;
+  const todoRoute = todoRoutes(req, res);
+  if (todoRoute) return;
 
-  const handled = noteRoutes(req, res);
-  if (handled) return;
+  const noteRoute = noteRoutes(req, res);
+  if (noteRoute) return;
 
   res.writeHead(404);
   res.end(
