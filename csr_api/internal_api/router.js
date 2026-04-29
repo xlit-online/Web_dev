@@ -1,4 +1,5 @@
 const todoRoutes = require("./routes/todo.route");
+const noteRoutes = require("./routes/note.route");
 
 function router(req, res) {
   // CORS
@@ -22,6 +23,9 @@ function router(req, res) {
   req.pathname = urlObj.pathname;
 
   const handled = todoRoutes(req, res);
+  if (handled) return;
+
+  const handled = noteRoutes(req, res);
   if (handled) return;
 
   res.writeHead(404);

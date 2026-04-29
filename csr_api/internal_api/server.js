@@ -3,7 +3,7 @@ const router = require("./router");
 
 require("dotenv").config(); // load .env variables
 const connectDB = require("./config/db"); // MongoDB connection function
-
+        
 const PORT = process.env.PORT || 3000;
 
 // connect to MongoDB first
