@@ -1,4 +1,4 @@
-const API_BASE = "https://YOUR_RENDER_URL_HERE/api/notes";
+const API_BASE = "https://web-dev-csr-api-internal-api.onrender.com/api/notes";
 
 let notes = [];
 let editNoteId = null;
