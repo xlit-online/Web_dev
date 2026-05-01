@@ -4,13 +4,15 @@ const todoForm = document.getElementById("todoForm");
 const todoInput = document.getElementById("todoInput");
 const todoList = document.getElementById("todoList");
 
+let todos = []
+
 async function loadTodos() {
   todoList.innerHTML = "";
 
   const res = await fetch(API_URL);
-  const todos = await res.json();
+  const data = await res.json();
 
-  todos.forEach((todo) => {
+    todos = data.forEach((todo) => {
     const li = document.createElement("li");
 
     li.textContent = todo.title;
