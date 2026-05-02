@@ -1,3 +1,5 @@
+const linkController = require("../controllers/link.controller");
+
 function linkRoutes(req, res) {
   const pathname = req.parsedUrl.pathname;
 
@@ -28,3 +30,5 @@ function linkRoutes(req, res) {
 
   return false;
 }
+
+module.exports = linkRoutes;
