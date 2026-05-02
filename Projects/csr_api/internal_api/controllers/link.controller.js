@@ -40,7 +40,7 @@ async function shortenUrl(req, res) {
     }
 }
 
-async function getALlLinks(req, res) {
+async function getAllLinks(req, res) {
     try{
         const link = await Link.find().sort({ createdAt: -1});
 
