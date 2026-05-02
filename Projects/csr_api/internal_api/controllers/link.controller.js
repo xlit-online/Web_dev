@@ -62,7 +62,7 @@ async function getLinkAnalytics(req, res, code){
             return res.end(JSON.stringify({message: "Short link not found"}));
         }
 
-        res.writeHead(200 {"Content-Type": "application/json" });
+        res.writeHead(200, {"Content-Type": "application/json" });
         res.end(JSON.stringify(link));
     }
     catch(error) {
