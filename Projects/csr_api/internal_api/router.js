@@ -14,8 +14,6 @@ function router(req, res) {
     return res.end();
   }
 
-  res.setHeader("Content-Type", "application/json");
-
   // ✅ IMPORTANT: DO NOT destroy query params
   const urlObj = new URL(req.url, `http://${req.headers.host}`);
 
