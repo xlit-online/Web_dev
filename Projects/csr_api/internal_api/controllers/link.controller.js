@@ -45,7 +45,7 @@ async function getAllLinks(req, res) {
         const link = await Link.find().sort({ createdAt: -1});
 
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(links));
+        res.end(JSON.stringify(link));
     }
     catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
@@ -82,7 +82,7 @@ async function redirectToOriginal(req, res, code) {
         link.clicks += 1;
         await link.save();
 
-        res.writeHead(302, {Location: link.original });
+        res.writeHead(302, {Location: link.originalUrl });
         res.end();
     }catch (error) {
         res.writeHead(500, {"Content-Type": "text/plain" });
