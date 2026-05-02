@@ -1,4 +1,9 @@
-const noteController = require("../controllers/note.controller");
+const {
+  shortenUrl,
+  getAllLinks,
+  getLinkAnalytics,
+  redirectToOriginal,
+} = require("../controllers/link.controller");
 
 function noteRoutes(req, res) {
   const url = req.pathname;
