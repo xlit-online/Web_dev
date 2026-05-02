@@ -1,27 +1,33 @@
-const linkController = require("../controllers/link.controller");
+const {
+  shortenUrl,
+  getAllLinks,
+  getLinkAnalytics,
+  redirectToOriginal,
+} = require("../controllers/link.controller");
 
 function linkRoutes(req, res) {
-  const pathname = req.parsedUrl.pathname;
-
-  if (pathname === "/api/shorten" && req.method === "POST") {
+  // POST /api/shorten
+  if (req.url === "/api/shorten" && req.method === "POST") {
     shortenUrl(req, res);
     return true;
   }
 
-  if (pathname === "/api/links" && req.method === "GET") {
+  // GET /api/links
+  if (req.url === "/api/links" && req.method === "GET") {
     getAllLinks(req, res);
     return true;
   }
 
-  if (pathname.startsWith("/api/links/") && req.method === "GET") {
-    const code = pathname.split("/")[3];
+  // GET /api/links/:code
+  if (req.url.startsWith("/api/links/") && req.method === "GET") {
+    const code = req.url.split("/")[3];
     getLinkAnalytics(req, res, code);
     return true;
   }
 
-  // redirect
-  if (!pathname.startsWith("/api") && req.method === "GET") {
-    const code = pathname.substring(1);
+  // GET /:code (redirect)
+  if (!req.url.startsWith("/api") && req.method === "GET") {
+    const code = req.url.substring(1);
     if (code) {
       redirectToOriginal(req, res, code);
       return true;
